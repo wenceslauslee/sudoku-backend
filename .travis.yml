@@ -1,11 +1,16 @@
 language: node_js
 node_js:
-  - "10"
+- '10'
 script:
-  - npm run style
+- npm test
+- npm run style
 notifications:
   email:
     recipients:
-     - wenceslauslee@gmail.com
-    on_success: change  # default: change
-    on_failure: always  # default: always
+    - wenceslauslee@gmail.com
+    on_success: change
+    on_failure: always
+env:
+  global:
+  - secure: nNIUrE+50XnBJMraypF8O0srzaAohh6VOqg2bOXcyw7wDN+KbP3aaETYRTgRvtWwc0VT0bg65O7+AEU3XL6nyVar1tk1lDpVB4smPL8f5FgINSAa8F1xSY5PJjQheBxLCZUDjbUs61+5tpLIve0AC6+YeLZp0qG3Dj8/j1YNvYQVPJwHljHbC5HYbjS0uogEiVLQsrCw/SjFPwWxyUPzvDJN2e6ZfLQ9r+5X/LBsXZq8quvbBdw6zt54qUavHLoosC55ediVFE3P4jjpxlXQBhaIQ3Q1Xap54mPRdLIzCkQlP9nn1vTtYkELkVXOP3OddZnTuIr9A8N+qfoOilUAXDmcId4940ZGBMx4go2WfCMkB7CnSv5DtjSk7Yg3HR7Lf6dDQBFRoqQkLp3IVYWFKT1UdHaujQl45UPL6sNi/Pr2LW2TGvlFiYZfwK93RXJ2WKrRQChJFZZUuCM4vEXvX5CUqtuiejwsSsxM4LpbumqFjKl0yh/J0UgBMg7gAZwhXC68NmJeO3LsJYNQJTvN0/IVMPEMYK4oCpQLk80jtghXeT1DmYo6JtDLX8MNpgqHDr1nAvxfMYXnhXWVynWU5SfhWWA6IE7G5JcgGot1LYAVGpQRAmkDfM7nHlvXmtWxqtTItt3wWaMQsBzykLDDjDDucOxsUnzTsCxDf2SaeEk=
+  - secure: VC66iHq5ZGczmOIjReBk9PmD/bI+ur4CVFw7O5ZIQDmcF2WMMIm68GKnWbnMe2ElKr1jx8Nvro1D/sOYC9/zylmWhMc7v8F+59WTHWCR0p6e1f5qtNyU7B7KsoNgEOSBr+eYa50Kpo4k42jv5P/NtqdAVgS02Nvmy53BUHlQkIJCTEbZJYJGyyMBVf0sQV/8Qy21QJ/pQXHeB6I7UTl2uaWu8N7LADfpsMY4bKCv2/0jXZOe6ZPNxnSRKjLqXqxRflN6To0Hb5DypioICyBNY5mP6OhIHD8IFz8M7lPvw5/1RWicfYsp6tISn9TzPgvUExk2r0/yMYef6MVlI/uqo9Jbg9MjisDLepmcDVfRXZyc94ed17BG9wUQ+tgOM5tTmY9QTGrqltNZeBDgNx0sJqj4f3DgAitT2VGY0Og0C5CxAkpF3/yiJqBA4NMC8BCqGb6W+HHAAWGR/rMeWbWQma1MIHGjPLTBkql/jOMwmLHbQMHfX+uMFkXDIXNwQF5/5dNcmPthNQKmK3lLc6uuGYGmpVdUuU++9Iasm/qoTcRU5BQFWzKC8msSD0ikk2k7hL+qJWzuScfjn1V/WvykvcdJIpQndStKfifK9UyH4/iu7GGAtyLiy2xme5A1SpbF5KHhDBXtjT4ovJ2RNU7J5Xu+HErkolz+3od2dCIEhVY=
