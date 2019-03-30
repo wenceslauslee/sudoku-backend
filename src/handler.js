@@ -10,15 +10,13 @@ async function hello(event) {
 };
 
 async function getPuzzle(event) {
-  console.log(event);
-  const puzzleString = await puzzleManager.getPuzzle('simple');
+  const puzzleString = await puzzleManager.getPuzzle(event.pathParameters.difficulty);
   const response = {
     statusCode: 200,
     body: {
       puzzleString: puzzleString
     }
   };
-  console.log(`GetPuzzle response is ${JSON.stringify(response, null, 2)}`);
 
   return response;
 }

@@ -6,7 +6,7 @@ AWS.config.update({
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 const puzzleTableMap = {
-  'simple': 'sudoku-puzzle-simple',
+  'trivial': 'sudoku-puzzle-trivial',
   'easy': 'sudoku-puzzle-easy',
   'medium': 'sudoku-puzzle-medium'
 };
