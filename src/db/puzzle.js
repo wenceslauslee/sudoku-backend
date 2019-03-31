@@ -28,7 +28,9 @@ function getPuzzle(difficulty, totalPuzzleCount) {
   return docClient.update(params).promise()
     .then(data => {
       console.log(`Puzzle returned is: ${JSON.stringify(data, null, 2)}`);
-      return data.Attributes.puzzleString;
+      data.Attributes.difficulty = difficulty;
+
+      return data.Attributes;
     })
     .catch(err => {
       console.log(err);
