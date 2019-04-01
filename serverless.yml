@@ -31,6 +31,7 @@ functions:
       - http:
           path: puzzles/{difficulty}
           method: get
+          cors: true
           request:
             parameters:
               paths:
