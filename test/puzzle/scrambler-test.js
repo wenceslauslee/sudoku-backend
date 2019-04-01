@@ -1,8 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
-const puzzleVerifier = require('../util/puzzle-verifier');
 const scrambler = require('../../src/puzzle/scrambler');
-const _ = require('underscore');
 
 describe('scrambler', () => {
   describe('scramblePuzzle', () => {
@@ -22,8 +20,7 @@ describe('scrambler', () => {
 
       assert.strictEqual(scrambledPuzzle.puzzleString.length, 81);
       assert.strictEqual(scrambledPuzzle.solvedPuzzleString.length, 81);
-      assert.isTrue(puzzleVerifier.verifyPuzzleStringsMatch(
-        scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
+      assert.isTrue(verifyPuzzleStringsMatch(scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
       assert.isTrue(testScrambledValue(expectedPuzzleString, scrambledPuzzle.puzzleString, scrambledPuzzle.metadata));
       assert.isTrue(testScrambledValue(
         expectedSolvedPuzzleString, scrambledPuzzle.solvedPuzzleString, scrambledPuzzle.metadata));
@@ -40,8 +37,7 @@ describe('scrambler', () => {
 
       assert.strictEqual(scrambledPuzzle.puzzleString.length, 81);
       assert.strictEqual(scrambledPuzzle.solvedPuzzleString.length, 81);
-      assert.isTrue(puzzleVerifier.verifyPuzzleStringsMatch(
-        scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
+      assert.isTrue(verifyPuzzleStringsMatch(scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
       assert.isTrue(testScrambledValue(expectedPuzzleString, scrambledPuzzle.puzzleString, scrambledPuzzle.metadata));
       assert.isTrue(testScrambledValue(
         expectedSolvedPuzzleString, scrambledPuzzle.solvedPuzzleString, scrambledPuzzle.metadata));
@@ -58,8 +54,7 @@ describe('scrambler', () => {
 
       assert.strictEqual(scrambledPuzzle.puzzleString.length, 81);
       assert.strictEqual(scrambledPuzzle.solvedPuzzleString.length, 81);
-      assert.isTrue(puzzleVerifier.verifyPuzzleStringsMatch(
-        scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
+      assert.isTrue(verifyPuzzleStringsMatch(scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
       assert.isTrue(testScrambledValue(expectedPuzzleString, scrambledPuzzle.puzzleString, scrambledPuzzle.metadata));
       assert.isTrue(testScrambledValue(
         expectedSolvedPuzzleString, scrambledPuzzle.solvedPuzzleString, scrambledPuzzle.metadata));
@@ -76,8 +71,7 @@ describe('scrambler', () => {
 
       assert.strictEqual(scrambledPuzzle.puzzleString.length, 81);
       assert.strictEqual(scrambledPuzzle.solvedPuzzleString.length, 81);
-      assert.isTrue(puzzleVerifier.verifyPuzzleStringsMatch(
-        scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
+      assert.isTrue(verifyPuzzleStringsMatch(scrambledPuzzle.puzzleString, scrambledPuzzle.solvedPuzzleString));
       assert.isTrue(testScrambledValue(expectedPuzzleString, scrambledPuzzle.puzzleString, scrambledPuzzle.metadata));
       assert.isTrue(testScrambledValue(
         expectedSolvedPuzzleString, scrambledPuzzle.solvedPuzzleString, scrambledPuzzle.metadata));
@@ -89,6 +83,18 @@ describe('scrambler', () => {
 
       for (var i = 0; i < length; i++) {
         if (expectedPuzzleString[i] !== '_' && metadataObject[expectedPuzzleString[i]] !== actualPuzzleString[i]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function verifyPuzzleStringsMatch(puzzleString, solvedPuzzleString) {
+      const length = puzzleString.length;
+
+      for (var i = 0; i < length; i++) {
+        if (puzzleString[i] !== '_' && puzzleString[i] !== solvedPuzzleString[i]) {
           return false;
         }
       }

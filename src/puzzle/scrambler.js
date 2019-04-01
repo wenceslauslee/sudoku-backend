@@ -65,8 +65,8 @@ function createMetadataObject(metadata) {
     '6': metadata[6] + '',
     '7': metadata[7] + '',
     '8': metadata[8] + '',
-    '9': metadata[9] + '',
-  }
+    '9': metadata[9] + ''
+  };
 }
 
 module.exports = {
