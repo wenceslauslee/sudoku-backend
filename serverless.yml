@@ -26,7 +26,7 @@ functions:
   puzzles:
     handler: src/puzzles-handler.handle
     memorySize: 256
-    description: Get puzzle based on difficulty.
+    description: Handler for puzzle operations.
     events:
       - http:
           path: puzzles/{difficulty}
@@ -36,6 +36,25 @@ functions:
             parameters:
               paths:
                 difficulty: true
+          authorizer:
+            name: authorizer
+            arn: arn:aws:cognito-idp:us-east-1:262375365616:userpool/us-east-1_mTowUagf1
+  users:
+    handler: src/users-handler.handle
+    memorySize: 256
+    description: Handler for user operations.
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
+          authorizer:
+            name: authorizer
+            arn: arn:aws:cognito-idp:us-east-1:262375365616:userpool/us-east-1_mTowUagf1
+      - http:
+          path: users
+          method: put
+          cors: true
           authorizer:
             name: authorizer
             arn: arn:aws:cognito-idp:us-east-1:262375365616:userpool/us-east-1_mTowUagf1
