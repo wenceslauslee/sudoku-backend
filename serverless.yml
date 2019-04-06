@@ -58,6 +58,10 @@ functions:
           authorizer:
             name: authorizer
             arn: arn:aws:cognito-idp:us-east-1:262375365616:userpool/us-east-1_mTowUagf1
+  post-confirmation:
+    handler: src/users-handler.confirm
+    memorySize: 256
+    description: Handler for saving user to DB after post confirmation.
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

@@ -47,6 +47,14 @@ async function handle(event) {
   return response;
 }
 
+async function confirm(event, context, callback) {
+  const user = event.userName;
+  await userManager.updateUser(user, JSON.parse(event.body));
+
+  callback(null, event);
+}
+
 module.exports = {
-  handle: handle
+  handle: handle,
+  confirm: confirm
 };
