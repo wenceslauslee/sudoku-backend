@@ -9,35 +9,13 @@ async function handle(event) {
 
   if (resource === '/users' && httpMethod === 'GET') {
     const user = handlerUtil.getUser(event);
-    const userInfo = await userManager.getUser(user);
-    response = {
-      statusCode: 200,
-      body: JSON.stringify({
-        userInfo: userInfo
-      })
-    };
+    response = await userManager.getUser(user);
   } else if (resource === '/users' && httpMethod === 'PUT') {
     const user = handlerUtil.getUser(event);
-    const result = await userManager.updateUser(user, JSON.parse(event.body));
-
-    if (result === null) {
-      response = {
-        statusCode: 200,
-        body: JSON.stringify({
-          status: 'success'
-        })
-      };
-    } else {
-      response = {
-        statusCode: result.statusCode,
-        body: JSON.stringify({
-          message: result.message
-        })
-      };
-    }
+    response = await userManager.updateUser(user, JSON.parse(event.body));
   } else {
     response = {
-      statusCode: 404,
+      statusCode: 500,
       body: JSON.stringify({
         message: 'Unknown method!'
       })

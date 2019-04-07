@@ -14,11 +14,14 @@ function storePuzzle(userId, puzzleCount, puzzle) {
       'userId': userId,
       'puzzleCount': puzzleCount
     },
-    UpdateExpression: 'set puzzleId = :pid, difficulty = :d, metadata = :md',
+    UpdateExpression: 'set puzzleId = :pid, difficulty = :d, metadata = :md, completed = :c',
     ExpressionAttributeValues: {
       ':pid': puzzle.id,
       ':d': puzzle.difficulty,
-      ':md': puzzle.metadata
+      ':md': {
+        puzzle: puzzle.metadata
+      },
+      ':c': 0
     },
     ReturnValues: 'ALL_NEW'
   };
@@ -35,10 +38,36 @@ function storePuzzle(userId, puzzleCount, puzzle) {
     });
 }
 
-function getMaxPuzzleCount(userId) {
+function completePuzzle(userId, puzzleCount, completed) {
   const params = {
     TableName: tableName,
-    ProjectionExpression: 'puzzleCount',
+    Key: {
+      'userId': userId,
+      'puzzleCount': puzzleCount
+    },
+    UpdateExpression: 'set completed = :c',
+    ExpressionAttributeValues: {
+      ':c': completed
+    },
+    ReturnValues: 'ALL_NEW'
+  };
+
+  return docClient.update(params).promise()
+    .then(data => {
+      console.log(`User ${userId} completed (${completed}) puzzle ${puzzleCount}`);
+
+      return data.Attribute;
+    })
+    .catch(err => {
+      console.log(err);
+      throw err;
+    });
+}
+
+function getLastPuzzle(userId) {
+  const params = {
+    TableName: tableName,
+    ProjectionExpression: 'puzzleCount, metadata, completed',
     KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
       ':userId': userId
@@ -50,9 +79,9 @@ function getMaxPuzzleCount(userId) {
   return docClient.query(params).promise()
     .then(data => {
       if (data.Items.length === 0) {
-        return 0;
+        return null;
       }
-      return data.Items[0].puzzleCount;
+      return data.Items[0];
     })
     .catch(err => {
       console.log(err);
@@ -62,5 +91,6 @@ function getMaxPuzzleCount(userId) {
 
 module.exports = {
   storePuzzle: storePuzzle,
-  getMaxPuzzleCount: getMaxPuzzleCount
+  getLastPuzzle: getLastPuzzle,
+  completePuzzle: completePuzzle
 };

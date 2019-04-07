@@ -5,8 +5,11 @@ const userManager = require('../../src/user/user-manager');
 describe('userManager', () => {
   describe('getUser', () => {
     it('should return user', async () => {
-      const userInfo = await userManager.getUser('test-user');
+      const response = await userManager.getUser('test-user');
+      const body = JSON.parse(response.body);
+      const userInfo = body.userInfo;
 
+      assert.strictEqual(response.statusCode, 200);
       assert.strictEqual(userInfo.givenname, 'Test User');
       assert.strictEqual(userInfo.email, 'wenceslauslee@yahoo.com.tw');
       assert.strictEqual(userInfo.gender, 'male');
@@ -22,9 +25,12 @@ describe('userManager', () => {
         gender: 'male',
         birthdate: '1990-01-01'
       };
-      const result = await userManager.updateUser('test-user', updatedValues);
+      const response = await userManager.updateUser('test-user', updatedValues);
+      const body = JSON.parse(response.body);
+      const status = body.status;
 
-      assert.isNull(result);
+      assert.strictEqual(response.statusCode, 200);
+      assert.strictEqual(status, 'Success');
     });
   });
 
@@ -54,10 +60,12 @@ describe('userManager', () => {
 
       it(`should return '${expectedMessage[i]}' when given wrong input`, async () => {
         updatedValues[input[i]['key']] = input[i]['value'];
-        const result = await userManager.updateUser('test-user', updatedValues);
+        const response = await userManager.updateUser('test-user', updatedValues);
+        const body = JSON.parse(response.body);
+        const message = body.message;
 
-        assert.strictEqual(result.statusCode, 404);
-        assert.strictEqual(result.message, expectedMessage[i]);
+        assert.strictEqual(response.statusCode, 404);
+        assert.strictEqual(message, expectedMessage[i]);
       });
     }
 

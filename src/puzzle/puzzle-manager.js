@@ -1,25 +1,91 @@
-const puzzle = require('../db/puzzle');
-const puzzleData = require('../db/puzzle-data');
+const inputChecker = require('../util/input-checker');
+const puzzleDb = require('../db/puzzle');
+const puzzleDataDb = require('../db/puzzle-data');
 const scrambler = require('./scrambler');
-const userPuzzleData = require('../db/user-puzzle-data');
+const userPuzzleDataDb = require('../db/user-puzzle-data');
 
-function getPuzzle(userId, difficulty) {
-  return puzzleData.getCount(difficulty)
-    .then(count => {
-      return puzzle.getPuzzle(difficulty, count);
-    })
-    .then(puzzle => {
-      return scrambler.scramblePuzzle(puzzle);
-    })
-    .then(puzzle => {
-      return userPuzzleData.getMaxPuzzleCount(userId)
-        .then(maxPuzzleCount => {
-          return userPuzzleData.storePuzzle(userId, maxPuzzleCount + 1, puzzle);
+async function getPuzzle(userId, difficulty) {
+  try {
+    const lastPuzzle = await userPuzzleDataDb.getLastPuzzle(userId);
+    if (lastPuzzle !== null && lastPuzzle.completed === 0) {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({
+          message: 'Previous puzzle still in progress.'
         })
-        .then(() => puzzle.puzzleString);
-    });
+      };
+    }
+
+    if (!inputChecker.checkDifficulty(difficulty)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: 'Get puzzle request is not valid'
+        })
+      };
+    }
+
+    const userPuzzleCount = lastPuzzle ? lastPuzzle.puzzleCount : 0;
+    const puzzleId = await puzzleDataDb.getCount(difficulty);
+    const puzzle = await puzzleDb.getPuzzle(difficulty, puzzleId);
+    const scrambledPuzzle = scrambler.scramblePuzzle(puzzle);
+    await userPuzzleDataDb.storePuzzle(userId, userPuzzleCount + 1, scrambledPuzzle);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        puzzleString: scrambledPuzzle.puzzleString
+      })
+    };
+  } catch (err) {
+    console.log(err);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'Internal Server Error'
+      })
+    };
+  }
+}
+
+async function completePuzzle(userId, requestBody) {
+  if (!inputChecker.checkBoolean(requestBody.abandon) || !inputChecker.checkString(requestBody.puzzleString)) {
+    return {
+      statusCode: 400,
+      message: 'Post puzzle completion request is not valid'
+    };
+  }
+
+  try {
+    const lastPuzzle = await userPuzzleDataDb.getLastPuzzle(userId);
+
+    // DO some validation with actual puzzle answer and puzzleString
+
+    var completed = 1;
+    await userPuzzleDataDb.completePuzzle(userId, lastPuzzle.puzzleCount, completed);
+
+    // Record metrics and datetimes
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'Success'
+      })
+    };
+  } catch (err) {
+    console.log(err);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'Internal Server Error'
+      })
+    };
+  }
 }
 
 module.exports = {
-  getPuzzle: getPuzzle
+  getPuzzle: getPuzzle,
+  completePuzzle: completePuzzle
 };
