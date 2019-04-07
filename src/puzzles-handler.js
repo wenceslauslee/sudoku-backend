@@ -5,20 +5,16 @@ async function handle(event) {
   console.log(event);
   const resource = event.resource;
   const httpMethod = event.httpMethod;
+  const user = handlerUtil.getUser(event);
   var response = {};
 
-  if (resource === '/puzzles/{difficulty}' && httpMethod === 'GET') {
-    const user = handlerUtil.getUser(event);
-    const puzzleString = await puzzleManager.getPuzzle(user, event.pathParameters.difficulty);
-    response = {
-      statusCode: 200,
-      body: JSON.stringify({
-        puzzleString: puzzleString
-      })
-    };
+  if (resource === '/puzzles/new/{difficulty}' && httpMethod === 'GET') {
+    response = await puzzleManager.getPuzzle(user, event.pathParameters.difficulty);
+  } else if (resource === '/puzzles/complete' && httpMethod === 'POST') {
+    response = await puzzleManager.completePuzzle(user, JSON.parse(event.body));
   } else {
     response = {
-      statusCode: 404,
+      statusCode: 500,
       body: JSON.stringify({
         message: 'Unknown method!'
       })
