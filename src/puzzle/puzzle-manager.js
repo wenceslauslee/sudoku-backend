@@ -53,16 +53,25 @@ async function completePuzzle(userId, requestBody) {
   if (!inputChecker.checkBoolean(requestBody.abandon) || !inputChecker.checkString(requestBody.puzzleString)) {
     return {
       statusCode: 400,
-      message: 'Post puzzle completion request is not valid'
+      body: JSON.stringify({
+        message: 'Post puzzle completion request is not valid'
+      })
     };
   }
 
   try {
     const lastPuzzle = await userPuzzleDataDb.getLastPuzzle(userId);
 
-    // DO some validation with actual puzzle answer and puzzleString
+    if (!requestBody.abandon && requestBody.puzzleString !== lastPuzzle.solution) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: 'Post puzzle completion request puzzle string is incorrect'
+        })
+      };
+    }
 
-    var completed = 1;
+    const completed = requestBody.abandon ? -1 : 1;
     await userPuzzleDataDb.completePuzzle(userId, lastPuzzle.puzzleCount, completed);
 
     // Record metrics and datetimes
