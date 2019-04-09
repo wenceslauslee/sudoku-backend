@@ -1,6 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 const puzzleManager = require('../../src/puzzle/puzzle-manager');
+const userPuzzleDataDb = require('../../src/db/user-puzzle-data');
 
 describe('puzzleManager', () => {
   describe('getPuzzle', () => {
@@ -22,11 +23,13 @@ describe('puzzleManager', () => {
       assert.strictEqual(message, 'Previous puzzle still in progress.');
     });
 
-    // Mark puzzles as completed so next test run will not fail
+    // Mark puzzles as completed so next test run will not fail.
+    // Cheat by getting last puzzle by user to get solution.
     after(async () => {
+      const lastPuzzle = await userPuzzleDataDb.getLastPuzzle('test-user');
       const completeBody = {
         abandon: false,
-        puzzleString: 'some-string-for-now'
+        puzzleString: lastPuzzle.solution
       };
       await puzzleManager.completePuzzle('test-user', completeBody);
     });

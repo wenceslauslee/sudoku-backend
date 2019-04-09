@@ -14,14 +14,15 @@ function storePuzzle(userId, puzzleCount, puzzle) {
       'userId': userId,
       'puzzleCount': puzzleCount
     },
-    UpdateExpression: 'set puzzleId = :pid, difficulty = :d, metadata = :md, completed = :c',
+    UpdateExpression: 'set puzzleId = :pid, difficulty = :d, metadata = :md, completed = :c, solution = :s',
     ExpressionAttributeValues: {
       ':pid': puzzle.id,
       ':d': puzzle.difficulty,
       ':md': {
         puzzle: puzzle.metadata
       },
-      ':c': 0
+      ':c': 0,
+      ':s': puzzle.solvedPuzzleString
     },
     ReturnValues: 'ALL_NEW'
   };
@@ -67,7 +68,7 @@ function completePuzzle(userId, puzzleCount, completed) {
 function getLastPuzzle(userId) {
   const params = {
     TableName: tableName,
-    ProjectionExpression: 'puzzleCount, metadata, completed',
+    ProjectionExpression: 'puzzleCount, metadata, completed, solution',
     KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
       ':userId': userId
