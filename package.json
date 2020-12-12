@@ -22,6 +22,6 @@
   },
   "scripts": {
     "style": "eslint src test",
-    "test": "mocha"
+    "test": "mocha test/**/*.js --exclude test/user/*-integ-test.js --exclude test/puzzle/*-integ-test.js"
   }
 }
